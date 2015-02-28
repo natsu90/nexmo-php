@@ -1,0 +1,39 @@
+{
+    "name": "natsu90/nexmo-php",
+    "description": "A Nexmo PHP library wrapper.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mohd Sulaiman",
+            "email": "mohd.sulaiman@sudirman.info"
+        }
+    ],
+    "repositories": [
+        {
+            "type":"git",
+            "url":"https://github.com/natsu90/cuzzle"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=5.3.3",
+        "guzzlehttp/guzzle": "~5.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.1",
+        "vlucas/phpdotenv": "~1.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Natsu90\\Nexmo\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Natsu90\\Nexmo\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "bin-dir": "bin/"
+    }
+}
