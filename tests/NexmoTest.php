@@ -14,6 +14,7 @@ class NexmoTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         Dotenv::load(dirname(__DIR__));
+        Dotenv::required(array('NEXMO_KEY', 'NEXMO_SECRET'));
         $this->nexmo = new NexmoAccount(getenv('NEXMO_KEY'), getenv('NEXMO_SECRET'));
     }
 
@@ -22,6 +23,25 @@ class NexmoTest extends \PHPUnit_Framework_TestCase
         $balance = $this->nexmo->getBalance();
         echo $balance;
         $this->assertTrue(is_numeric($balance));
+    }
+
+    public function sendMessageDataProvider()
+    {
+        return array(
+            array('601117225067', '60122862306', 'hello world'),
+            array('60327884488', '60122862306', 'الله أكبر'),
+        );
+    }
+
+    /**
+     * @dataProvider sendMessageDataProvider
+     */
+
+    public function testSendMessage($from, $to, $text)
+    {
+        $response = $this->nexmo->sendMessage($from, $to, $text);
+        print_r($response);
+        $this->assertTrue((bool) $response);
     }
 
     /**

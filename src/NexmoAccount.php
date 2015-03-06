@@ -15,25 +15,76 @@ class NexmoAccount extends AbstractNexmoClient {
     	return $response->json()['value'];
     }
 
+    private function validateOriginator($inp){
+        // Remove any invalid characters
+        $ret = preg_replace('/[^a-zA-Z0-9]/', '', (string)$inp);
+        if(preg_match('/[a-zA-Z]/', $inp)){
+            // Alphanumeric format so make sure it's < 11 chars
+            $ret = substr($ret, 0, 11);
+        } else {
+            // Numerical, remove any prepending '00'
+            if(substr($ret, 0, 2) == '00'){
+                $ret = substr($ret, 2);
+                $ret = substr($ret, 0, 15);
+            }
+        }
+        
+        return (string)$ret;
+    }
+
+    public function sendMessage($from, $to, $text, $data = array())
+    {
+        // Making sure strings are UTF-8 encoded
+        if ( !is_numeric($from) && !mb_check_encoding($from, 'UTF-8') ) {
+            $this->error = array('error' => '$from needs to be a valid UTF-8 encoded string');
+            return false;
+        }
+        if ( !mb_check_encoding($text, 'UTF-8') ) {
+            $this->error = array('error' => '$message needs to be a valid UTF-8 encoded string');
+            return false;
+        }
+
+        $isUnicode = max(array_map('ord', str_split($text))) > 127;
+
+        // Make sure $from is valid
+        $from = $this->validateOriginator($from);
+
+        $body = array(
+                        'api_key' => $this->nexmo_key,
+                        'api_secret' => $this->nexmo_secret,
+                        'from' => $from,
+                        'to' => $to,
+                        'text' => $text,
+                        'type' => $isUnicode ? 'unicode' : 'text'
+                    );
+
+        $body = array_merge($data, $body);
+
+        $response = $this->client->post('/sms/json', array(
+                'headers' => array('Content-Type' => 'application/x-www-form-urlencoded'),
+                'body' => $body
+            ));
+
+        return $response->json();
+    }
+
     public function getOutboundPricing($countryCode, $prefix = false)
     {
-
+        return true;
     }
 
     public function getPhonePricing($phoneNumber, $productCode = 'sms')
     {
     	if(!in_array($productCode, array('sms','voice')))
     		throw new Exception("Invalid product code");
-    		
+    	return true;
     }
 
-    public function updateAccountSettings($data = array(), $overwrite = false)
+    /*
+        Define moCallBackUrl & drCallBackUrl in array input, otherwise it will read as blank & get overwritten.
+    */
+    public function updateAccountSettings($data = array())
     {
-        if(!$overwrite) {
-            $this->error = array('error' => 'Define moCallBackUrl & drCallBackUrl in array input, otherwise it will read as blank & overwrite. Set $overwrite to true if you want to proceed anyway.');
-            return false;
-        }
-
     	$response = $this->client->post('/account/settings/'.$this->nexmo_key.'/'.$this->nexmo_secret, array(
     					'headers' => array('Content-Type' => 'application/x-www-form-urlencoded'),
     					'query' => $data
