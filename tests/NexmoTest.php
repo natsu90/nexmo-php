@@ -9,7 +9,7 @@ class NexmoTest extends \PHPUnit_Framework_TestCase
 {
     private $nexmo;
     private $debug = true;
-    private $callBackUrl = 'http://1296279f.ngrok.com';
+    private $callBackUrl = 'http://nexmo.namial.us/callback';
 
     protected function setUp()
     {

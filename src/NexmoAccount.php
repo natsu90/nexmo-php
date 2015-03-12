@@ -6,13 +6,13 @@ use GuzzleHttp\Client;
 
 class NexmoAccount extends AbstractNexmoClient {
 
-	protected $end_point = 'https://rest.nexmo.com';
+    protected $end_point = 'https://rest.nexmo.com';
     
     public function getBalance()
     {
-    	$response = $this->client->get('/account/get-balance/'.$this->nexmo_key.'/'.$this->nexmo_secret);
+        $response = $this->client->get('/account/get-balance/'.$this->nexmo_key.'/'.$this->nexmo_secret);
 
-    	return $response->json()['value'];
+        return $response->json()['value'];
     }
 
     private function validateOriginator($inp){
@@ -75,9 +75,9 @@ class NexmoAccount extends AbstractNexmoClient {
 
     public function getPhonePricing($phoneNumber, $productCode = 'sms')
     {
-    	if(!in_array($productCode, array('sms','voice')))
-    		throw new Exception("Invalid product code");
-    	return true;
+        if(!in_array($productCode, array('sms','voice')))
+            throw new Exception("Invalid product code");
+        return true;
     }
 
     /*
@@ -85,38 +85,38 @@ class NexmoAccount extends AbstractNexmoClient {
     */
     public function updateAccountSettings($data = array())
     {
-    	$response = $this->client->post('/account/settings/'.$this->nexmo_key.'/'.$this->nexmo_secret, array(
-    					'headers' => array('Content-Type' => 'application/x-www-form-urlencoded'),
-    					'query' => $data
-    				));
+        $response = $this->client->post('/account/settings/'.$this->nexmo_key.'/'.$this->nexmo_secret, array(
+                        'headers' => array('Content-Type' => 'application/x-www-form-urlencoded'),
+                        'query' => $data
+                    ));
 
-    	return $response->json();
+        return $response->json();
     }
 
     public function topUpAccount($transactionId)
     {
-    	$response = $this->client->get('/account/top-up/'.$this->nexmo_key.'/'.$this->nexmo_secret.'/'.$transactionId, array(
-    					'exceptions' => false
-    				));
+        $response = $this->client->get('/account/top-up/'.$this->nexmo_key.'/'.$this->nexmo_secret.'/'.$transactionId, array(
+                        'exceptions' => false
+                    ));
 
-    	return $response->getStatusCode() == 200;
+        return $response->getStatusCode() == 200;
     }
 
     public function getInboundNumbers($data = array())
     {
-    	$response = $this->client->get('/account/numbers/'.$this->nexmo_key.'/'.$this->nexmo_secret, array(
-    					'query' => $data
-    				));
+        $response = $this->client->get('/account/numbers/'.$this->nexmo_key.'/'.$this->nexmo_secret, array(
+                        'query' => $data
+                    ));
 
-    	return $response->json();
+        return $response->json();
     }
 
     public function getAvailableInboundNumbers($countryCode, $data = array())
     {
-    	$response = $this->client->get('/number/search/'.$this->nexmo_key.'/'.$this->nexmo_secret.'/'.$countryCode, array(
-    					'query' => $data,
+        $response = $this->client->get('/number/search/'.$this->nexmo_key.'/'.$this->nexmo_secret.'/'.$countryCode, array(
+                        'query' => $data,
                         'exceptions' => false,
-    				));
+                    ));
 
         $success = $response->getStatusCode() == 200;
         if(!$success) {
@@ -127,15 +127,15 @@ class NexmoAccount extends AbstractNexmoClient {
             return false;
         }
 
-    	return $response->json();
+        return $response->json();
     }
 
     public function buyNumber($countryCode, $phoneNumber)
     {
-    	$response = $this->client->post('/number/buy/'.$this->nexmo_key.'/'.$this->nexmo_secret.'/'.$countryCode.'/'.$phoneNumber, array(
-    					'headers' => array('Content-Type' => 'application/x-www-form-urlencoded'),
-    					'exceptions' => false
-    				));
+        $response = $this->client->post('/number/buy/'.$this->nexmo_key.'/'.$this->nexmo_secret.'/'.$countryCode.'/'.$phoneNumber, array(
+                        'headers' => array('Content-Type' => 'application/x-www-form-urlencoded'),
+                        'exceptions' => false
+                    ));
 
         $success = $response->getStatusCode() == 200;
         if(!$success)
@@ -146,10 +146,10 @@ class NexmoAccount extends AbstractNexmoClient {
 
     public function cancelNumber($countryCode, $phoneNumber)
     {
-    	$response = $this->client->post('/number/cancel/'.$this->nexmo_key.'/'.$this->nexmo_secret.'/'.$countryCode.'/'.$phoneNumber, array(
-    					'headers' => array('Content-Type' => 'application/x-www-form-urlencoded'),
-    					'exceptions' => false
-    				));
+        $response = $this->client->post('/number/cancel/'.$this->nexmo_key.'/'.$this->nexmo_secret.'/'.$countryCode.'/'.$phoneNumber, array(
+                        'headers' => array('Content-Type' => 'application/x-www-form-urlencoded'),
+                        'exceptions' => false
+                    ));
 
         $success = $response->getStatusCode() == 200;
         if(!$success)
@@ -161,16 +161,16 @@ class NexmoAccount extends AbstractNexmoClient {
     public function updateNumber($countryCode, $phoneNumber, $moHttpUrl, $data = array(), $overwrite = false)
     {
         $data['moHttpUrl'] = $moHttpUrl;
-    	$response = $this->client->post('/number/update/'.$this->nexmo_key.'/'.$this->nexmo_secret.'/'.strtoupper($countryCode).'/'.$phoneNumber, array(
-    					'headers' => array('Content-Type' => 'application/x-www-form-urlencoded'),
-    					'query' => $data,
-    					'exceptions' => false
-    				));
+        $response = $this->client->post('/number/update/'.$this->nexmo_key.'/'.$this->nexmo_secret.'/'.strtoupper($countryCode).'/'.$phoneNumber, array(
+                        'headers' => array('Content-Type' => 'application/x-www-form-urlencoded'),
+                        'query' => $data,
+                        'exceptions' => false
+                    ));
 
         $success = $response->getStatusCode() == 200;
         if(!$success)
-            $this->error = $response->json();
+            $this->error = $response->getBody();
 
-    	return $success;
+        return $success;
     }
 }
