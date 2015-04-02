@@ -5,10 +5,10 @@ use GuzzleHttp\Client;
 
 abstract class AbstractNexmoClient {
 
-	protected $nexmo_key;
-	protected $nexmo_secret;
-	protected $end_point;
-	protected $client;
+	public $nexmo_key;
+	public $nexmo_secret;
+	public $end_point;
+	public $client;
 	public $error;
 
 	public function __construct($nexmo_key, $nexmo_secret)

@@ -6,7 +6,7 @@ use GuzzleHttp\Client;
 
 class NexmoAccount extends AbstractNexmoClient {
 
-    protected $end_point = 'https://rest.nexmo.com';
+    public $end_point = 'https://rest.nexmo.com';
     
     public function getBalance()
     {
